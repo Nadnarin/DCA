@@ -10,7 +10,7 @@
     - [SummaryCards](#SummaryCards)
     - [Chart](#Chart)
     - [DataTable](#DataTable)
-- [ตัวอย่าง](#ตัวอย่าง)
+- [script](#script)
 - [การมีส่วนร่วม](#การมีส่วนร่วม)
 - [License](#license)
 
@@ -348,3 +348,8 @@
 </p>
 ```
 - ข้อความเล็ก สีเทาอ่อน → ทำหน้าที่เป็น Disclaimer แจ้งผู้ใช้ว่าเป็นเพียงการคาดการณ์
+
+
+# script
+เป็น “ตัวควบคุมฝั่ง JavaScript” สำหรับเชื่อม ฟอร์ม (Input Section) เข้ากับ ผลลัพธ์ (Results Section)
+## 
