@@ -54,3 +54,11 @@
 ## `<style>`
   - บังคับทั้งหน้าควรใช้ Kanit ก่อน และ fallback เป็น sans-serif
   - คลาส .kanit-semibold เป็น utility เล็ก ๆ สำหรับน้ำหนัก 600 หากไม่อยากพึ่ง Tailwind class ในบางที่
+
+
+# <body class="...">
+
+
+
+
+
