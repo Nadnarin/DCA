@@ -8,6 +8,8 @@
     - [InputFormSection](#InputFormSection)
     - [ResultsSection](#ResultsSection)
     - [SummaryCards](#SummaryCards)
+    - [Chart](#Chart)
+    - [DataTable](#DataTable)
 - [ตัวอย่าง](#ตัวอย่าง)
 - [การมีส่วนร่วม](#การมีส่วนร่วม)
 - [License](#license)
@@ -269,3 +271,80 @@
     - ตัวเลขใหญ่ สีเหลือง
 
 ใช้สีต่างกันเพื่อแยกมิติของข้อมูลได้ง่าย
+
+## Chart
+```html
+<div class="mb-8">
+    <canvas id="resultsChart"></canvas>
+</div>
+```
+- `<canvas>` → Chart.js จะใช้พื้นที่นี้วาดกราฟแท่ง (Stacked Bar) เปรียบเทียบเงินต้น vs ผลตอบแทน
+- `mb-8` → เว้นพื้นที่ด้านล่าง
+
+## DataTable
+```html
+<div>
+    <div class="flex justify-between items-center mb-4">
+        <h3 class="text-xl font-bold">ตารางสรุปผลรายปี</h3>
+        <button id="copy-button" class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg transition-colors text-sm">
+            คัดลอกข้อมูลสำหรับ Google Sheets
+        </button>
+    </div>
+    <div class="overflow-x-auto max-h-80 relative shadow-md rounded-lg">
+        <table id="results-table" class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+             <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400 sticky top-0">
+                <tr>
+                    <th scope="col" class="py-3 px-6">ปีที่</th>
+                    <th scope="col" class="py-3 px-6">เงินต้นสะสม</th>
+                    <th scope="col" class="py-3 px-6">ดอกเบี้ย/ผลตอบแทนสะสม</th>
+                    <th scope="col" class="py-3 px-6">มูลค่ารวมสิ้นปี</th>
+                </tr>
+            </thead>
+            <tbody id="resultsTableBody">
+                <!-- Data will be injected here by JavaScript -->
+            </tbody>
+        </table>
+    </div>
+    <p class="text-xs text-gray-500 mt-2">*การคำนวณนี้เป็นเพียงการประมาณการเพื่อประกอบการวางแผนเท่านั้น ผลตอบแทนจริงอาจแตกต่างกันไป</p>
+</div>
+```
+
+### ส่วนหัวของตาราง + ปุ่มคัดลอก
+```html
+<div class="flex justify-between items-center mb-4">
+   <h3 class="text-xl font-bold">ตารางสรุปผลรายปี</h3>
+   <button id="copy-button" ...>คัดลอกข้อมูลสำหรับ Google Sheets</button>
+</div>
+```
+- ใช้ Flexbox จัดหัวข้อไว้ด้านซ้าย และปุ่มไว้ด้านขวา
+- ปุ่ม `#copy-button` จะเรียก JavaScript เพื่อคัดลอกข้อมูลในตารางไปยัง คลิปบอร์ด (พร้อมวางลง Google Sheets ได้ทันที)
+
+### ตารางสรุปผล
+```html
+<div class="overflow-x-auto max-h-80 relative shadow-md rounded-lg">
+   <table id="results-table" ...>
+      <thead> ... </thead>
+      <tbody id="resultsTableBody">
+         <!-- JS เติมข้อมูลแต่ละปี -->
+      </tbody>
+   </table>
+</div>
+```
+- `overflow-x-auto` → ถ้าตารางกว้างเกิน จะเลื่อนซ้าย-ขวาได้
+- `max-h-80` → ความสูงสูงสุด ≈ 20rem ถ้ามีข้อมูลเยอะจะ scroll แนวตั้ง
+- `shadow-md rounded-lg` → ใส่เงาและมุมโค้ง
+
+`<thead>` → หัวตาราง (ติดด้านบน `sticky top-0`) มีคอลัมน์:
+- ปีที่
+- เงินต้นสะสม
+- ดอกเบี้ย/ผลตอบแทนสะสม
+- มูลค่ารวมสิ้นปี
+`<tbody id="resultsTableBody">` → เนื้อหาตารางจะถูก inject ด้วย JavaScript (ผลการคำนวณแต่ละปี)
+
+### หมายเหตุท้ายตาราง
+```html
+<p class="text-xs text-gray-500 mt-2">
+   *การคำนวณนี้เป็นเพียงการประมาณการเพื่อประกอบการวางแผนเท่านั้น ผลตอบแทนจริงอาจแตกต่างกันไป
+</p>
+```
+- ข้อความเล็ก สีเทาอ่อน → ทำหน้าที่เป็น Disclaimer แจ้งผู้ใช้ว่าเป็นเพียงการคาดการณ์
