@@ -5,7 +5,7 @@
 ## Table of Contents
 - [Head](#head)
 - [body](#body)
-    - [Input Form Section](#Input Form Section)
+    - [Input Form Section](#InputFormSection)
 - [ตัวอย่าง](#ตัวอย่าง)
 - [การมีส่วนร่วม](#การมีส่วนร่วม)
 - [License](#license)
