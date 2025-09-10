@@ -126,7 +126,7 @@
  - มือถือ: เนื้อหาเรียงลง 1 คอลัมน์
  - จอใหญ่: จะแบ่งเป็น 3 คอลัมน์ (ซ้าย: ฟอร์ม, ขวา 2 คอลัมน์: ผลลัพธ์)
 
-## Input Form Section
+## InputFormSection
 ### กล่องหลัก
 ```html
 <div class="lg:col-span-1 bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-lg">
