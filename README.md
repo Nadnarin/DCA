@@ -5,7 +5,7 @@
 ## Table of Contents
 - [Head](#head)
 - [body](#body)
-    - [Input Form Section](#InputFormSection)
+    - [InputFormSection](#InputFormSection)
 - [ตัวอย่าง](#ตัวอย่าง)
 - [การมีส่วนร่วม](#การมีส่วนร่วม)
 - [License](#license)
@@ -138,4 +138,24 @@
  - `shadow-lg` → เงาลอยเด่น
 
 คือกล่อง ฟอร์มป้อนข้อมูลการลงทุน
+
+### หัวข้อของกล่อง
+```html
+<h2 class="text-2xl font-bold mb-6 border-b pb-3 border-gray-200 dark:border-gray-700">
+    ข้อมูลการลงทุน
+</h2>
+```
+ - `text-2xl font-bold` → ตัวใหญ่ (2xl ≈ 24px) หนา
+ - `mb-6` → มี margin ล่าง 1.5rem
+ - `border-b pb-3` → เส้นขีดล่าง + padding ล่าง 0.75rem
+ - `border-gray-200 dark:border-gray-700` → เส้นสีเทาอ่อนในโหมดปกติ / เทาเข้มในโหมดมืด
+
+ทำหน้าที่เป็นหัวข้อของฟอร์ม
+
+### ฟอร์ม `id="calculator-form"`
+```html
+<form id="calculator-form" class="space-y-4">
+```
+ - `id="calculator-form"` → ใช้เรียกใน JavaScript เพื่อประมวลผล
+ - `space-y-4` → แต่ละ `<div>` ภายในฟอร์มมีระยะห่างแนวตั้ง 1rem
 
