@@ -6,6 +6,8 @@
 - [Head](#head)
 - [body](#body)
     - [InputFormSection](#InputFormSection)
+    - [ResultsSection](#ResultsSection)
+    - [SummaryCards](#SummaryCards)
 - [ตัวอย่าง](#ตัวอย่าง)
 - [การมีส่วนร่วม](#การมีส่วนร่วม)
 - [License](#license)
@@ -213,10 +215,57 @@
     คำนวณ
 </button>
 ```
- - w-full → กว้างเต็ม container
- - bg-indigo-600 hover:bg-indigo-700 → สีพื้นน้ำเงินม่วง + เปลี่ยนเฉดเมื่อ hover
- - rounded-md shadow-sm → มุมโค้งเล็ก + เงาบาง
- - focus:ring-2 → มีเอฟเฟกต์วงแหวนเวลา focus
- - transition-colors → ทำให้สีเปลี่ยนแบบ smooth
+ - `w-full` → กว้างเต็ม container
+ - `bg-indigo-600 hover:bg-indigo-700` → สีพื้นน้ำเงินม่วง + เปลี่ยนเฉดเมื่อ hover
+ - `rounded-md shadow-sm` → มุมโค้งเล็ก + เงาบาง
+ - `focus:ring-2` → มีเอฟเฟกต์วงแหวนเวลา focus
+ - `transition-colors` → ทำให้สีเปลี่ยนแบบ smooth
    
 เป็นปุ่มหลักของฟอร์ม เมื่อกดจะส่งข้อมูลไปให้ JavaScript คำนวณ
+
+
+## ResultsSection
+```html
+<div id="results-container" class="lg:col-span-2 bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-lg" style="display: none;">
+    <h2 class="text-2xl font-bold mb-4 border-b pb-3 border-gray-200 dark:border-gray-700">ผลลัพธ์การลงทุน</h2>
+```
+- `id="results-container"` → ใช้สำหรับควบคุมการแสดงผลด้วย JavaScript (ตอนเริ่มต้น ซ่อนอยู่ ด้วย `display: none;`)
+- `lg:col-span-2` → บนหน้าจอใหญ่ กล่องนี้จะกินพื้นที่ 2 คอลัมน์ ของ Grid
+- `bg-white dark:bg-gray-800` → พื้นหลังขาว/เทาเข้มตามโหมด
+- `p-6 rounded-2xl shadow-lg` → padding 1.5rem, มุมโค้งมน, และเงาลอย
+- ข้อความตัวหนา ขนาด 2xl
+- มีเส้นคั่นด้านล่าง (border-b) เพื่อแยกหัวข้อ
+
+กล่องหลักที่เก็บผลลัพธ์การคำนวณทั้งหมด
+
+## SummaryCards
+```html
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6 text-center">
+ <div class="bg-gray-100 dark:bg-gray-700 p-4 rounded-lg">
+    <h3 class="text-sm font-medium text-gray-500 dark:text-gray-400">มูลค่าในอนาคต (FV)</h3>
+    <p id="resultFV" class="text-2xl font-bold text-indigo-600 dark:text-indigo-400 mt-1">฿0</p>
+ </div>
+ <div class="bg-gray-100 dark:bg-gray-700 p-4 rounded-lg">
+    <h3 class="text-sm font-medium text-gray-500 dark:text-gray-400">เงินต้นทั้งหมด</h3>
+    <p id="resultPrincipal" class="text-2xl font-bold text-orange-500 mt-1">฿0</p>
+ </div>
+ <div class="bg-gray-100 dark:bg-gray-700 p-4 rounded-lg">
+    <h3 class="text-sm font-medium text-gray-500 dark:text-gray-400">ดอกเบี้ย/ผลตอบแทน</h3>
+    <p id="resultInterest" class="text-2xl font-bold text-yellow-500 mt-1">฿0</p>
+ </div>
+</div>
+```
+- `grid-cols-1` → บนจอเล็กเรียงการ์ดแนวตั้ง
+- `md:grid-cols-3` → บนจอใหญ่เรียงเป็น 3 คอลัมน์
+- `gap-4` → เว้นระยะห่างระหว่างการ์ด
+- `text-center` → จัดเนื้อหาให้อยู่กึ่งกลาง
+
+#### การ์ดแต่ละใบ:
+ - มูลค่าในอนาคต (FV) → id `resultFV` แสดงมูลค่าลงทุนรวม ณ สิ้นงวด
+   - ตัวเลขใหญ่ สี indig
+ - เงินต้นทั้งหมด → id `resultPrincipal` แสดงผลรวมเงินลงทุนที่ใส่ไปเอง
+    - ตัวเลขใหญ่ สีส้ม
+ - ดอกเบี้ย/ผลตอบแทน → `id resultInterest` แสดงกำไรที่ได้เพิ่ม
+    - ตัวเลขใหญ่ สีเหลือง
+
+ใช้สีต่างกันเพื่อแยกมิติของข้อมูลได้ง่าย
