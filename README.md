@@ -39,8 +39,10 @@
 ## โหลด Chart.js เพื่อดูกราฟใน Canvas
 สั่งเบราว์เซอร์ “เปิดการเชื่อมต่อไว้ก่อน” (DNS/TLS handshake) กับโดเมนฟอนต์เพื่อลดเวลารอโหลดฟอนต์ครั้งแรก
  - crossorigin จำเป็นกับ fonts.gstatic.com เพราะไฟล์ฟอนต์เป็น cross-origin และอาจใช้ cache/shared connection
+```
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+```
 
 ## โหลดฟอนต์ Kanit
 ```html
@@ -49,6 +51,6 @@
  - ระบุช่วงน้ำหนักที่ใช้จริงเพื่อลด payload
  - display=swap ให้ fallback font แสดงก่อน ลด FOIT (Flash of Invisible Text)
 
-## '<style>'
+## `<style>`
   - บังคับทั้งหน้าควรใช้ Kanit ก่อน และ fallback เป็น sans-serif
   - คลาส .kanit-semibold เป็น utility เล็ก ๆ สำหรับน้ำหนัก 600 หากไม่อยากพึ่ง Tailwind class ในบางที่
