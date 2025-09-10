@@ -159,3 +159,64 @@
  - `id="calculator-form"` → ใช้เรียกใน JavaScript เพื่อประมวลผล
  - `space-y-4` → แต่ละ `<div>` ภายในฟอร์มมีระยะห่างแนวตั้ง 1rem
 
+### อินพุตที่ 1: เงินลงทุนเริ่มต้น (PV)
+```html
+<label for="initialInvestment">เงินลงทุนเริ่มต้น (PV)</label>
+<div class="mt-1 relative rounded-md shadow-sm">
+   <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+      <span class="text-gray-500 sm:text-sm">฿</span>
+   </div>
+   <input type="number" id="initialInvestment" value="100000" ... placeholder="0.00">
+</div>
+```
+ - `<label>` → ข้อความกำกับฟิลด์นี้
+ - `relative` + `absolute` → ทำให้สัญลักษณ์ ฿ อยู่ซ้ายในกล่องป้อนค่า
+ - `pointer-events-none` → ป้องกันไม่ให้คลิกโดนสัญลักษณ์
+ - `input type="number"` → ช่องป้อนตัวเลข, ค่าเริ่มต้น = 100000
+ - `pl-7 pr-12` → padding ซ้ายเว้นที่ให้สัญลักษณ์, padding ขวาเว้นช่อง
+
+### อินพุตที่ 2: เงินลงทุนเพิ่มต่อเดือน (DCA)
+โครงสร้างเหมือน PV ต่างกันที่:
+ - `id="monthlyContribution"`
+ - ค่าเริ่มต้น `5000`
+ - มีสัญลักษณ์ ฿ เหมือนกัน
+
+### อินพุตที่ 3: อัตราผลตอบแทนต่อปี (i)
+```html
+<label for="interestRate">อัตราผลตอบแทนต่อปี (i)</label>
+<div class="mt-1 relative rounded-md shadow-sm">
+   <input type="number" id="interestRate" value="7" ... placeholder="0.00">
+   <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
+      <span class="text-gray-500 sm:text-sm">%</span>
+   </div>
+</div>
+```
+ - อินพุตชนิดตัวเลข ค่า default = 7
+ - สัญลักษณ์ % อยู่ขอบขวาของกล่อง
+
+### อินพุตที่ 4: ระยะเวลาลงทุน (n)
+```html
+<label for="years">ระยะเวลาลงทุน (n)</label>
+<div class="mt-1 relative rounded-md shadow-sm">
+   <input type="number" id="years" value="20" ... placeholder="0">
+   <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
+      <span class="text-gray-500 sm:text-sm">ปี</span>
+   </div>
+</div>
+```
+ - อินพุตชนิดตัวเลข ค่า default = 20
+ - สัญลักษณ์ ปี อยู่ขอบขวา
+ 
+### ปุ่มคำนวณ
+```html
+<button type="submit" class="w-full bg-indigo-600 text-white py-3 px-4 border border-transparent rounded-md shadow-sm text-base font-medium hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors">
+    คำนวณ
+</button>
+```
+ - w-full → กว้างเต็ม container
+ - bg-indigo-600 hover:bg-indigo-700 → สีพื้นน้ำเงินม่วง + เปลี่ยนเฉดเมื่อ hover
+ - rounded-md shadow-sm → มุมโค้งเล็ก + เงาบาง
+ - focus:ring-2 → มีเอฟเฟกต์วงแหวนเวลา focus
+ - transition-colors → ทำให้สีเปลี่ยนแบบ smooth
+   
+เป็นปุ่มหลักของฟอร์ม เมื่อกดจะส่งข้อมูลไปให้ JavaScript คำนวณ
