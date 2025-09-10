@@ -33,6 +33,7 @@
 ## Tailwind CSS
 ```html
 <script src="https://cdn.tailwindcss.com"></script>
+```
 
 
 ## โหลด Chart.js เพื่อดูกราฟใน Canvas
@@ -44,6 +45,7 @@
 ## โหลดฟอนต์ Kanit
 ```html
 <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@400;500;600;700&display=swap" rel="stylesheet">
+```
  - ระบุช่วงน้ำหนักที่ใช้จริงเพื่อลด payload
  - display=swap ให้ fallback font แสดงก่อน ลด FOIT (Flash of Invisible Text)
 
