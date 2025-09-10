@@ -89,18 +89,18 @@
 
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
 ```
-## `<body class="...">`
+### `<body class="...">`
  - `bg-gray-100 dark:bg-gray-900` → กำหนดสีพื้นหลัง เทาอ่อน เมื่อโหมดปกติ และ เทาเข้ม เมื่อโหมด Dark
  - `text-gray-800 dark:text-gray-200` → กำหนดสีข้อความเป็น เทาเข้ม (อ่านง่ายบนพื้นอ่อน) และ เทาอ่อน (อ่านง่ายบนพื้นมืด)
  - `p-4 sm:p-6 lg:p-8` → กำหนด padding รอบ ๆ เนื้อหา: 1rem (16px) บนมือถือ, 1.5rem บนหน้าจอขนาด sm ขึ้นไป, 2rem บนหน้าจอขนาด lg ขึ้นไป
 สรุป: บรรยากาศของหน้าจะ responsive ทั้ง padding และสี โดยสลับตามโหมดสว่าง/มืด
 
-## `<div class="max-w-7xl mx-auto">`
+### `<div class="max-w-7xl mx-auto">`
  - `max-w-7xl` → จำกัดความกว้างสูงสุดของเนื้อหาที่ ~1280px (ตาม scale ของ Tailwind)
  - `mx-auto` → จัดให้กล่องนี้อยู่กึ่งกลางแนวนอน (margin-left/right auto)
 สรุป: ทำให้เนื้อหามี ความกว้างจำกัดและจัดกึ่งกลาง บนหน้าจอ
 
-## `<header class="text-center mb-8">`
+### `<header class="text-center mb-8">`
  - `text-center` → จัดข้อความกึ่งกลาง
  - `mb-8` → กำหนด margin-bottom = 2rem เพื่อเว้นที่ว่างด้านล่าง
 
@@ -116,7 +116,7 @@
     - `text-gray-600 dark:text-gray-400` → สีเทาเข้มในโหมดปกติ และเทาอ่อนในโหมดมืด
 สรุป: ส่วน header ใช้สำหรับ ชื่อแอป (หัวเรื่องใหญ่) และ คำบรรยายสั้น ๆ อยู่กึ่งกลางหน้า
 
-## `<div class="grid grid-cols-1 lg:grid-cols-3 gap-8">`
+### `<div class="grid grid-cols-1 lg:grid-cols-3 gap-8">`
  - `grid` → ใช้ CSS Grid Layout
  - `grid-cols-1` → เริ่มต้นแสดงเป็น 1 คอลัมน์ (มือถือ/จอเล็ก)
  - `lg:grid-cols-3` → เมื่อถึง breakpoint `lg` (~1024px ขึ้นไป) จะเปลี่ยนเป็น 3 คอลัมน์
