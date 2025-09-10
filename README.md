@@ -33,3 +33,8 @@
 ## Tailwind CSS
 ```html
 <script src="https://cdn.tailwindcss.com"></script>
+
+
+## โหลด Chart.js เพื่อดูกราฟใน Canvas
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
