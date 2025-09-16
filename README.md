@@ -12,7 +12,8 @@
     - [DataTable](#DataTable)
 - [script](#script)
     - [กำหนดตัวแปรสำคัญ](#กำหนดตัวแปรสำคัญ)
-    - [ฟังก์ชัน format เงิน](#ฟังก์ชัน)
+    - [ฟังก์ชัน format เงิน](#ฟังก์ชันformatเงิน)
+    - [จับevent"submit"ของฟอร์ม](#จับevent"submit"ของฟอร์ม)
 - [การมีส่วนร่วม](#การมีส่วนร่วม)
 - [License](#license)
 
@@ -392,7 +393,7 @@ let myChart;
 - `resultsContainer` → อ้างถึง `<div id="results-container">` (ผลลัพธ์ที่ซ่อนอยู่)
 - `myChart` → ตัวแปรเก็บ instance ของกราฟ (จาก Chart.js) เพื่อ destroy/สร้างใหม่ได้ทุกครั้งที่คำนวณ
 
-### ฟังก์ชัน format  เงิน
+### ฟังก์ชันformatเงิน
 ```js
 const currencyFormatter = new Intl.NumberFormat('th-TH', {
     style: 'currency',
@@ -414,7 +415,7 @@ calculateAndDisplay();
 - เรียกฟังก์ชัน `calculateAndDisplay()` (ที่เขียนไว้ตอนท้ายสคริปต์) เพื่อให้เมื่อหน้าเพิ่งเปิดขึ้นมา จะแสดงผลจากค่า default (`PV=100000`, `DCA=5000`, `i=7%`,`n=20`) ทันที
 - ช่วย UX → ผู้ใช้เห็นตัวอย่างผลลัพธ์โดยไม่ต้องกดปุ่มก่อน
 
-### จับ event "submit" ของฟอร์ม
+### จับevent"submit"ของฟอร์ม
 ```js
 form.addEventListener('submit', (e) => {
     e.preventDefault();
