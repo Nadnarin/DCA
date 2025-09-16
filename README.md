@@ -15,6 +15,7 @@
     - [format](#format)
     - [submit](#submit)
     - [calculateAndDisplay](#calculateAndDisplay)
+    - [updateChart](#updateChart)
 
 ---
 
@@ -427,6 +428,7 @@ form.addEventListener('submit', (e) => {
 - `e.preventDefault();` → ป้องกันพฤติกรรมปกติของฟอร์มที่จะ reload หน้า
 - `calculateAndDisplay();` → เรียกฟังก์ชันคำนวณและอัปเดตผลใหม่ทันที
 
+---
 ### calculateAndDisplay
 ดึงค่าจากฟอร์ม
 ```js
@@ -554,3 +556,11 @@ resultsContainer.style.display = 'block';
 ```
 - เดิม `#results-container` ถูกซ่อนด้วย `style="display: none;"`
 - บรรทัดนี้เปลี่ยนให้แสดงผลขึ้นมา → ผู้ใช้จะเห็นทั้งการ์ด, กราฟ, ตาราง
+
+---
+### updateChart
+ฟังก์ชัน `updateChart(data)` ที่ใช้สร้าง/อัปเดตกราฟ Chart.js สำหรับแสดงการเติบโตของเงินลงทุน
+```js
+const ctx = document.getElementById('resultsChart').getContext('2d');
+
+```
