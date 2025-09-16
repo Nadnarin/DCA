@@ -14,8 +14,7 @@
     - [กำหนดตัวแปรสำคัญ](#กำหนดตัวแปรสำคัญ)
     - [format](#format)
     - [submit](#submit)
-- [การมีส่วนร่วม](#การมีส่วนร่วม)
-- [License](#license)
+    - [calculateAndDisplay](#calculateAndDisplay)
 
 ---
 
@@ -427,3 +426,131 @@ form.addEventListener('submit', (e) => {
 - `form.addEventListener('submit', ...)` → รอจับเหตุการณ์เมื่อผู้ใช้กดปุ่ม คำนวณ หรือกด Enter ในฟอร์ม
 - `e.preventDefault();` → ป้องกันพฤติกรรมปกติของฟอร์มที่จะ reload หน้า
 - `calculateAndDisplay();` → เรียกฟังก์ชันคำนวณและอัปเดตผลใหม่ทันที
+
+### calculateAndDisplay
+ดึงค่าจากฟอร์ม
+```js
+function calculateAndDisplay() {
+    const initialInvestment = parseFloat(document.getElementById('initialInvestment').value) || 0;
+    const monthlyContribution = parseFloat(document.getElementById('monthlyContribution').value) || 0;
+    const annualRate = parseFloat(document.getElementById('interestRate').value) / 100 || 0;
+    const years = parseInt(document.getElementById('years').value) || 0;
+    
+    if (years === 0) return;
+```
+- `initialInvestment` → เงินลงทุนก้อนแรก (PV)
+- `monthlyContribution` → เงินลงทุนเพิ่มทุกเดือน (DCA)
+- `annualRate` → อัตราผลตอบแทนรายปี แปลง `%` → ทศนิยม เช่น 7 → 0.07
+- `years` → ระยะเวลาลงทุน (ปี)
+- ถ้าไม่ได้ระบุจำนวนปี → ยกเลิกการคำนวณทันที
+ถ้าผู้ใช้ไม่ได้กรอก (ค่าเป็น `NaN` หรือว่าง) จะ fallback เป็น `0`
+
+### เตรียมตัวแปรคำนวณ
+```js
+const monthlyRate = annualRate / 12;
+const totalMonths = years * 12;
+
+let futureValue = initialInvestment;
+let totalPrincipal = initialInvestment;
+let totalInterest = 0;
+
+const annualData = [];
+```
+- `monthlyRate` → อัตราผลตอบแทนต่อเดือน
+- `totalMonths` → จำนวนเดือนทั้งหมดที่ลงทุน
+- `futureValue` → ค่าเงินรวม ณ ปัจจุบัน (เริ่มจากเงินต้นก้อนแรก)
+- `totalPrincipal` → เงินต้นสะสม (รวมทั้งก้อนแรกและ DCA)
+- `totalInterest` → ใช้เก็บดอกเบี้ยรวม (เริ่มที่ 0)
+- `annualData` → Array เก็บผลลัพธ์รายปี (สำหรับตารางและกราฟ)
+
+### วนลูปรายเดือน
+```js
+for (let m = 1; m <= totalMonths; m++) {
+    const interestThisMonth = futureValue * monthlyRate;
+    futureValue += interestThisMonth;
+    futureValue += monthlyContribution;
+    totalPrincipal += monthlyContribution;
+```
+สำหรับแต่ละเดือน `m` :
+- คำนวณดอกเบี้ยเดือนนี้ = เงินรวมปัจจุบัน × อัตราต่อเดือน
+- เพิ่มดอกเบี้ยเข้า `futureValue`
+- เพิ่มเงิน DCA เข้า `futureValue`
+- บวกเงิน DCA เข้า `totalPrincipal` (เงินที่เราใส่เอง)
+ทำซ้ำทุกเดือนจนกว่าจะครบทั้งหมด
+
+### เก็บข้อมูลสิ้นปี
+```js
+if (m % 12 === 0 || m === totalMonths) {
+     const currentYear = Math.ceil(m / 12);
+     const cumulativeInterest = futureValue - totalPrincipal;
+     annualData[currentYear-1] = {
+         year: currentYear,
+         principal: totalPrincipal,
+         interest: cumulativeInterest,
+         total: futureValue
+     };
+}
+```
+- `m % 12 === 0` → เมื่อครบ 12 เดือน (สิ้นปี)
+- `m === totalMonths` → หรือถ้าเป็นเดือนสุดท้ายของการลงทุน
+จะทำการ snapshot ค่ามาเก็บไว้:
+- `year` → ปีที่เท่าไร
+- `principal` → เงินต้นสะสมจนถึงปีนั้น
+- `interest` → ผลตอบแทนสะสม = มูลค่ารวม − เงินต้น
+- `total` → มูลค่ารวมสิ้นปี (FV)
+ข้อมูลนี้จะถูกนำไปใช้สร้าง ตารางรายปี และ กราฟ
+
+### อัปเดตการ์ดสรุป (Summary Cards)
+```js
+document.getElementById('resultFV').textContent = currencyFormatter.format(futureValue);
+document.getElementById('resultPrincipal').textContent = currencyFormatter.format(totalPrincipal);
+totalInterest = futureValue - totalPrincipal;
+document.getElementById('resultInterest').textContent = currencyFormatter.format(totalInterest);
+
+```
+- `resultFV` → ใส่มูลค่าในอนาคต (Future Value) ที่คำนวณได้
+- `resultPrincipal` → ใส่เงินต้นสะสม (ที่ลงทุนไปทั้งหมด)
+- `resultInterest` → คำนวณใหม่ = FV − เงินต้น แล้วใส่ในช่อง "ดอกเบี้ย/ผลตอบแทน"
+ทุกค่าผ่าน `currencyFormatter.format(...)` เพื่อแสดงเป็นสกุลเงินบาท เช่น `฿1,234,567.89`
+
+### อัปเดตตารางรายปี
+```js
+const tableBody = document.getElementById('resultsTableBody');
+tableBody.innerHTML = '';
+```
+- เคลียร์เนื้อหาเดิมของ `<tbody>` ก่อน (กันไม่ให้ข้อมูลเก่าค้างอยู่)
+```js
+annualData.forEach(data => {
+    const row = `
+        <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+            <th scope="row" class="py-4 px-6 font-medium text-gray-900 whitespace-nowrap dark:text-white">${data.year}</th>
+            <td class="py-4 px-6">${currencyFormatter.format(data.principal)}</td>
+            <td class="py-4 px-6">${currencyFormatter.format(data.interest)}</td>
+            <td class="py-4 px-6 font-semibold">${currencyFormatter.format(data.total)}</td>
+        </tr>
+    `;
+    tableBody.innerHTML += row;
+});
+```
+- วนลูป `annualData` (ที่เก็บ snapshot สิ้นปีไว้)
+- สำหรับแต่ละปี สร้าง `<tr>` ใส่ 4 ค่า:
+    - ปี (`data.year`)
+    - เงินต้นสะสม (`data.principal`)
+    - ดอกเบี้ยสะสม (`data.interest`)
+    - มูลค่ารวมสิ้นปี (`data.total`)
+- ใช้ Tailwind classes ทำสีพื้น/โหมด dark/hover และจัด format ของ cell
+ผลคือ ตารางจะสร้างใหม่ตามข้อมูลการคำนวณล่าสุด
+
+### อัปเดตกราฟ
+```js
+updateChart(annualData);
+```
+- เรียกฟังก์ชัน `updateChart(...)` โดยส่ง `annualData` ไปวาดกราฟ Chart.js (stacked bar chart)
+- กราฟจะแสดงเปรียบเทียบ เงินต้น vs ดอกเบี้ยสะสม ของแต่ละปี
+
+### แสดงผลลัพธ์
+```js
+resultsContainer.style.display = 'block';
+```
+- เดิม `#results-container` ถูกซ่อนด้วย `style="display: none;"`
+- บรรทัดนี้เปลี่ยนให้แสดงผลขึ้นมา → ผู้ใช้จะเห็นทั้งการ์ด, กราฟ, ตาราง
