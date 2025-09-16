@@ -11,6 +11,8 @@
     - [Chart](#Chart)
     - [DataTable](#DataTable)
 - [script](#script)
+    - [กำหนดตัวแปรสำคัญ](#กำหนดตัวแปรสำคัญ)
+    - [ฟังก์ชัน format เงิน](#ฟังก์ชันformatเงิน)
 - [การมีส่วนร่วม](#การมีส่วนร่วม)
 - [License](#license)
 
