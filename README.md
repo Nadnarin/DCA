@@ -351,5 +351,74 @@
 
 
 # script
-เป็น “ตัวควบคุมฝั่ง JavaScript” สำหรับเชื่อม ฟอร์ม (Input Section) เข้ากับ ผลลัพธ์ (Results Section)
-## 
+`script` เป็น “ตัวควบคุมฝั่ง JavaScript” สำหรับเชื่อม ฟอร์ม (Input Section) เข้ากับ ผลลัพธ์ (Results Section)
+```html
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const form = document.getElementById('calculator-form');
+        const resultsContainer = document.getElementById('results-container');
+        let myChart;
+
+        // Function to format currency
+        const currencyFormatter = new Intl.NumberFormat('th-TH', {
+            style: 'currency',
+            currency: 'THB',
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2,
+        });
+
+        // Trigger calculation on page load with default values
+        calculateAndDisplay();
+
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            calculateAndDisplay();
+        });
+```
+
+### `document.addEventListener('DOMContentLoaded', () => { ... });`
+- เป็น Event Listener → จะรันฟังก์ชันด้านในก็ต่อเมื่อ DOM ของหน้าโหลดเสร็จแล้ว
+- ป้องกันปัญหา JavaScript เรียก element ที่ยังไม่ถูกสร้างใน DOM
+
+### กำหนดตัวแปรสำคัญ
+```js
+const form = document.getElementById('calculator-form');
+const resultsContainer = document.getElementById('results-container');
+let myChart;
+```
+- `form` → อ้างถึง `<form id="calculator-form">` (ช่องกรอกข้อมูล)
+- `resultsContainer` → อ้างถึง `<div id="results-container">` (ผลลัพธ์ที่ซ่อนอยู่)
+- `myChart` → ตัวแปรเก็บ instance ของกราฟ (จาก Chart.js) เพื่อ destroy/สร้างใหม่ได้ทุกครั้งที่คำนวณ
+
+### สร้างฟังก์ชัน format เงิน
+```js
+const currencyFormatter = new Intl.NumberFormat('th-TH', {
+    style: 'currency',
+    currency: 'THB',
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+});
+```
+- ใช้ `Intl.NumberFormat` เพื่อจัดรูปแบบตัวเลขเป็น สกุลเงินบาท (THB)
+- บังคับให้มีทศนิยม 2 ตำแหน่งเสมอ เช่น
+    - 100000 → `฿100,000.00`
+    - 5000 → `฿5,000.00`
+ทำให้ข้อมูลที่แสดงออกมาดูเป็นมาตรฐาน ไม่ใช่เลขดิบ
+
+### คำนวณทันทีเมื่อโหลดหน้า
+```js
+calculateAndDisplay();
+```
+- เรียกฟังก์ชัน `calculateAndDisplay()` (ที่เขียนไว้ตอนท้ายสคริปต์) เพื่อให้เมื่อหน้าเพิ่งเปิดขึ้นมา จะแสดงผลจากค่า default (`PV=100000`, `DCA=5000`, `i=7%`,`n=20`) ทันที
+- ช่วย UX → ผู้ใช้เห็นตัวอย่างผลลัพธ์โดยไม่ต้องกดปุ่มก่อน
+
+### จับ event "submit" ของฟอร์ม
+```js
+form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    calculateAndDisplay();
+});
+```
+- `form.addEventListener('submit', ...)` → รอจับเหตุการณ์เมื่อผู้ใช้กดปุ่ม คำนวณ หรือกด Enter ในฟอร์ม
+- `e.preventDefault();` → ป้องกันพฤติกรรมปกติของฟอร์มที่จะ reload หน้า
+- `calculateAndDisplay();` → เรียกฟังก์ชันคำนวณและอัปเดตผลใหม่ทันที
