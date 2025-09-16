@@ -16,7 +16,7 @@
     - [submit](#submit)
     - [calculateAndDisplay](#calculateAndDisplay)
     - [updateChart](#updateChart)
-
+    - [CopytoClipboard](#CopytoClipboard)
 ---
 
 # `<head>`
@@ -415,7 +415,8 @@ calculateAndDisplay();
 ```
 - เรียกฟังก์ชัน `calculateAndDisplay()` (ที่เขียนไว้ตอนท้ายสคริปต์) เพื่อให้เมื่อหน้าเพิ่งเปิดขึ้นมา จะแสดงผลจากค่า default (`PV=100000`, `DCA=5000`, `i=7%`,`n=20`) ทันที
 - ช่วย UX → ผู้ใช้เห็นตัวอย่างผลลัพธ์โดยไม่ต้องกดปุ่มก่อน
-
+- 
+---
 ### submit
 จับ event "submit" ของฟอร์ม
 ```js
@@ -562,5 +563,224 @@ resultsContainer.style.display = 'block';
 ฟังก์ชัน `updateChart(data)` ที่ใช้สร้าง/อัปเดตกราฟ Chart.js สำหรับแสดงการเติบโตของเงินลงทุน
 ```js
 const ctx = document.getElementById('resultsChart').getContext('2d');
-
 ```
+- ดึง `<canvas id="resultsChart">` จาก DOM
+- `.getContext('2d')` → ใช้กราฟแบบ 2D (ที่ Chart.js ต้องการ)
+
+### ลบกราฟเก่า
+```js
+if (myChart) {
+    myChart.destroy();
+}
+```
+- ป้องกันไม่ให้กราฟซ้อนทับกันทุกครั้งที่คำนวณใหม่
+- ถ้ามี instance เก่า (`myChart`) จะถูกลบทิ้งก่อนสร้างใหม่
+
+### เตรียมข้อมูลจาก `annualData`
+```js
+const labels = data.map(d => `ปีที่ ${d.year}`);
+const principalData = data.map(d => d.principal);
+const interestData = data.map(d => d.interest);
+```
+- `labels` → [ "ปีที่ 1", "ปีที่ 2", ..., "ปีที่ N" ]
+- `principalData` → เงินต้นสะสมแต่ละปี
+- `interestData` → ดอกเบี้ย/ผลตอบแทนสะสมแต่ละปี
+ใช้ `.map()` ดึงค่าจากอ็อบเจ็กต์ใน `annualData`
+
+### สร้างกราฟใหม่
+```js
+myChart = new Chart(ctx, {
+    type: 'bar',
+    data: { ... },
+    options: { ... }
+});
+```
+- `type: 'bar'` → กราฟแท่ง
+- เก็บไว้ในตัวแปร `myChart` เพื่อ destroy ได้ในครั้งถัดไป
+
+### กำหนดข้อมูล (datasets)
+```js
+data: {
+    labels: labels,
+    datasets: [
+        {
+            label: 'เงินต้นสะสม',
+            data: principalData,
+            backgroundColor: 'rgb(251, 146, 60)', // ส้มอ่อน
+            borderColor: 'rgb(249, 115, 22)',     // ส้มเข้ม
+            borderWidth: 1
+        },
+        {
+            label: 'ดอกเบี้ย/ผลตอบแทนสะสม',
+            data: interestData,
+            backgroundColor: 'rgb(250, 204, 21)', // เหลืองอ่อน
+            borderColor: 'rgb(234, 179, 8)',      // เหลืองเข้ม
+            borderWidth: 1
+        }
+    ]
+}
+```
+- แบ่งข้อมูลเป็น 2 กลุ่ม (เงินต้น vs ผลตอบแทน)
+- ใช้สีส้มแทนเงินต้น, สีเหลืองแทนผลตอบแทน
+
+### ตั้งค่า Options
+```js
+options: {
+    responsive: true,
+    plugins: { ... },
+    scales: { ... }
+}
+```
+- `responsive: true` → กราฟปรับขนาดตามหน้าจอ
+### Plugins
+```js
+plugins: {
+    title: {
+        display: true,
+        text: 'การเติบโตของเงินลงทุน (เงินต้น vs ผลตอบแทน)',
+        font: { size: 18, family: 'Kanit' }
+    },
+    tooltip: {
+        callbacks: {
+            label: function(context) {
+                let label = context.dataset.label || '';
+                if (label) label += ': ';
+                if (context.parsed.y !== null) {
+                    label += currencyFormatter.format(context.parsed.y);
+                }
+                return label;
+            }
+        }
+    }
+}
+```
+- `title` → เพิ่มชื่อกราฟด้านบน ใช้ฟอนต์ Kanit ขนาด 18px
+- `tooltip` → เวลา hover บนแท่งกราฟ จะแสดงเป็นข้อความ เช่น
+    - “เงินต้นสะสม: ฿100,000.00”
+    - “ดอกเบี้ย/ผลตอบแทนสะสม: ฿250,000.00”
+### Scales (แกน X/Y)
+```js
+scales: {
+    x: {
+        stacked: true,
+        title: {
+            display: true,
+            text: 'ปี',
+            font: { family: 'Kanit' }
+        }
+    },
+    y: {
+        stacked: true,
+        title: {
+            display: true,
+            text: 'มูลค่า (บาท)',
+            font: { family: 'Kanit' }
+        },
+        ticks: {
+            callback: function(value) {
+                return '฿' + (value/1000) + 'k';
+            }
+        }
+    }
+}
+```
+- `stacked: true` → ทำให้แท่งของเงินต้น + ดอกเบี้ย ซ้อนกันในปีเดียวกัน (เห็นสัดส่วนรวมชัดเจน)
+- `title.text` → ป้ายชื่อแกน X = ปี, แกน Y = มูลค่า (บาท)
+- `ticks.callback` → แปลงค่า Y ให้สั้น เช่น
+    - 100000 → “฿100k”
+    - 500000 → “฿500k”
+
+---
+### CopytoClipboard
+ฟังก์ชัน Copy to Clipboard สำหรับให้ผู้ใช้กดปุ่มแล้วคัดลอกข้อมูลใน ตารางสรุปผลรายปี ไปวางใน Google Sheets หรือ Excel ได้ทันที
+
+### จับปุ่ม Copy
+```js
+document.getElementById('copy-button').addEventListener('click', () => {
+```
+- เมื่อผู้ใช้กดปุ่มที่มี `id="copy-button"` → จะเรียกฟังก์ชันนี้
+
+### เตรียมตัวแปร
+```js
+const table = document.getElementById('results-table');
+let dataString = '';
+```
+- `table` → อ้างอิง `<table id="results-table">` ที่มีผลลัพธ์
+- `dataString` → ตัวแปรเก็บข้อความที่เตรียมไว้สำหรับคัดลอก
+
+### ดึงหัวตาราง
+```js
+const headers = table.querySelectorAll('thead th');
+let headerArray = [];
+headers.forEach(header => headerArray.push(header.innerText));
+dataString += headerArray.join('\t') + '\n';
+```
+- `thead th` → เลือกทุกคอลัมน์หัวตาราง (ปีที่, เงินต้นสะสม, ดอกเบี้ยสะสม, มูลค่ารวมสิ้นปี)
+- เก็บค่า `.innerText` ของแต่ละหัวลงใน ``headerArray`
+- ใช้ `.join('\t')` เชื่อมด้วยแท็บ → ให้ออกมาในรูปแบบที่ Google Sheets เข้าใจได้
+- `+ '\n'` → ขึ้นบรรทัดใหม่
+### ผลลัพธ์ตัวอย่างที่ได้:
+```
+ปีที่    เงินต้นสะสม    ดอกเบี้ย/ผลตอบแทนสะสม    มูลค่ารวมสิ้นปี
+```
+
+### ดึงข้อมูลในตาราง (Body)
+```js
+const rows = table.querySelectorAll('tbody tr');
+rows.forEach(row => {
+    const cells = row.querySelectorAll('td, th');
+    let rowArray = [];
+    cells.forEach(cell => {
+        const cleanText = cell.innerText.replace(/[฿,]/g, '');
+        rowArray.push(cleanText);
+    });
+    dataString += rowArray.join('\t') + '\n';
+});
+```
+- เลือกทุกแถว `<tr>` ใน `<tbody>`
+- สำหรับแต่ละแถว เลือก cell (`<td>` และ `<th>`)
+- `.innerText` → อ่านค่าข้างใน cell
+- `.replace(/[฿,]/g, '')` → ลบสัญลักษณ์สกุลเงิน (฿) และเครื่องหมายคอมมา (,) ออก
+    - เช่น `฿100,000` → `100000`
+    - เพื่อให้วางลง Google Sheets ได้ง่าย ไม่ต้องแปลงเพิ่ม
+- รวมค่าในแถวด้วย `\t` → แยกคอลัมน์ด้วยแท็บ
+- `+ '\n'` → ขึ้นบรรทัดใหม่แต่ละแถว
+
+### ผลลัพธ์ตัวอย่างที่ได้:
+```
+1    100000    7000    107000
+2    160000    23000    183000
+...
+```
+
+### คัดลอกเข้าคลิปบอร์ด
+```js
+navigator.clipboard.writeText(dataString).then(() => {
+```
+- ใช้ API `navigator.clipboard.writeText(...)` คัดลอกข้อความที่เตรียมไว้ลง Clipboard
+
+### แสดง Feedback ให้ผู้ใช้
+```js
+const button = document.getElementById('copy-button');
+const originalText = button.innerText;
+button.innerText = 'คัดลอกแล้ว!';
+button.classList.remove('bg-green-500', 'hover:bg-green-600');
+button.classList.add('bg-blue-500');
+setTimeout(() => {
+    button.innerText = originalText;
+    button.classList.remove('bg-blue-500');
+    button.classList.add('bg-green-500', 'hover:bg-green-600');
+}, 2000);
+```
+- เปลี่ยนข้อความบนปุ่มเป็น “คัดลอกแล้ว!”
+- เปลี่ยนสีปุ่มจาก เขียว → น้ำเงิน
+- ผ่านไป 2 วินาที (setTimeout) จะเปลี่ยนกลับมาเหมือนเดิม (เขียว + ข้อความเดิม)
+ทำให้ผู้ใช้มั่นใจว่า ข้อมูลถูกคัดลอกแล้วจริง ๆ
+
+### กรณีผิดพลาด
+```js
+}).catch(err => {
+    console.error('Failed to copy: ', err);
+});
+```
+- ถ้า Clipboard API มีปัญหา → log error ไว้ใน console
