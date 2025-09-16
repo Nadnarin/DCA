@@ -392,7 +392,7 @@ let myChart;
 - `resultsContainer` → อ้างถึง `<div id="results-container">` (ผลลัพธ์ที่ซ่อนอยู่)
 - `myChart` → ตัวแปรเก็บ instance ของกราฟ (จาก Chart.js) เพื่อ destroy/สร้างใหม่ได้ทุกครั้งที่คำนวณ
 
-### สร้างฟังก์ชัน format เงิน
+### ฟังก์ชัน format  เงิน
 ```js
 const currencyFormatter = new Intl.NumberFormat('th-TH', {
     style: 'currency',
